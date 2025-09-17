@@ -1,1 +1,3 @@
-# taxi_prediction_fullstack_andreas_s_opa24
+# Taxi prediction lab
+
+TODO: add selling/marketing explanations of what this is about : 
