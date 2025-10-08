@@ -16,7 +16,7 @@ async def read_taxi_data():
 
 @app.post("/taxi/predict", response_model=PredictionOutput)
 def predict_trip_price(payload: TripInput):
-    preditction_data = pd.DataFrame([payload])
+    preditction_data = pd.DataFrame([payload.model_dump()])
 
     # Load the trained model, the used scaler and encoded_columns from training
     model = joblib.load(MODELS_PATH / "model.joblib")
@@ -35,14 +35,3 @@ def predict_trip_price(payload: TripInput):
 
     preditction = model.predict(encoded_data)
     return {"predicted_trip_price": preditction[0]}
-
-
-if __name__ == "__main__":
-    new_trips = {
-        "Base_Fare": 3.5,
-        "Trip_Distance_km": 19,
-        "Time_of_Day": "Morning",
-        "Day_of_Week": "Weekday",
-    }
-
-    print(predict_trip_price(new_trips))
