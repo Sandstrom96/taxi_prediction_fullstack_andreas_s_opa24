@@ -57,3 +57,16 @@ def get_day_of_week(day: str):
         return "Weekend"
     else:
         return "Unknown"
+
+
+def calculate_base_fare(df, time_of_day, day_of_week):
+    result = (
+        df.groupby(["Time_of_Day", "Day_of_Week"])["Base_Fare"].mean().reset_index()
+    )
+
+    value = result.loc[
+        (result["Time_of_Day"] == time_of_day) & (result["Day_of_Week"] == day_of_week),
+        "Base_Fare",
+    ]
+
+    return value.values[0] if not value.empty else None
