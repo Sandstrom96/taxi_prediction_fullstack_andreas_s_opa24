@@ -56,3 +56,46 @@ def get_coordinates(address):
     except Exception:
         st.error("A problem occurred during communication with the Google Maps API.")
         return None, None
+
+
+def get_distance_km(
+    start_lat, start_lon, dest_lat, dest_lon, departure_time=None, arrival_time=None
+):
+    if gmaps is None:
+        return None
+
+    origins = [f"{start_lat},{start_lon}"]
+    destinations = [f"{dest_lat},{dest_lon}"]
+
+    # Retrive time parameter dynamically
+    time_param = {}
+    if departure_time:
+        time_param["departure_time"] = departure_time
+    elif arrival_time:
+        time_param["arrival_time"] = arrival_time
+
+    try:
+        matrix_result = gmaps.distance_matrix(
+            origins,
+            destinations,
+            mode="driving",
+            units="metric",
+            **time_param,  # Pass the time parameter
+        )
+
+        distance_meters = matrix_result["rows"][0]["elements"][0]["distance"]["value"]
+        distance_km = distance_meters / 1000
+
+        return distance_km
+
+    except HTTPError as e:
+        st.error(
+            f"Distance Matrix API Error (HTTP 400). Check if the Distance Matrix API is enabled for your key. Error: {e}"
+        )
+        return None
+
+    except (IndexError, KeyError, TypeError):
+        st.error(
+            "Could not calculate distance. Check the addresses or if the route is possible."
+        )
+        return None
