@@ -1,5 +1,6 @@
 import requests
 from urllib.parse import urljoin
+from datetime import datetime
 
 
 def read_api_endpoint(endpoint="/", base_url="http://127.0.0.1:8000"):
@@ -26,7 +27,7 @@ def get_time_of_day(hour: int):
     Returns:
         str: "Morning" for 05-11
              "Afternoon" for 12 - 16
-             "Evning" for 17 - 21
+             "Evening" for 17 - 21
              "Night" for 22-04
     """
     if 5 <= hour < 12:
@@ -34,29 +35,23 @@ def get_time_of_day(hour: int):
     elif 12 <= hour < 17:
         return "Afternoon"
     elif 17 <= hour < 22:
-        return "Evning"
+        return "Evening"
     else:
         return "Night"
 
 
-def get_day_of_week(day: str):
+def get_day_of_week(date: datetime.date):
     """
-    Convert a specific day (e.g. "Monday") into a general category.
+    Convert a datetime.date object into a general category: Weekday or Weekend.
 
     Args:
-        day (str): Name of the day (e.g. 'Monday', 'Saturday').
+        date (datetime.date): The selected date.
 
     Returns:
-        str: 'Weekday' if the day is Monday–Friday,
-             'Weekend' if Saturday or Sunday,
-             otherwise 'Unknown'.
+        str: 'Weekday' if the date is Monday–Friday,
+             'Weekend' if the date is Saturday or Sunday.
     """
-    if day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]:
-        return "Weekday"
-    elif day in ["Saturday", "Sunday"]:
-        return "Weekend"
-    else:
-        return "Unknown"
+    return "Weekend" if date.weekday() >= 5 else "Weekday"
 
 
 def calculate_base_fare(df, time_of_day, day_of_week):
