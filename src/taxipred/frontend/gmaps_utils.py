@@ -33,3 +33,26 @@ def get_gmaps_client(api_key: str):
 
 
 gmaps = get_gmaps_client(API_KEY)
+
+
+def get_coordinates(address):
+    """Converts a text address to latitude and longitude using the Geocoding API."""
+    if gmaps is None:
+        return None, None
+
+    try:
+        # Call Google Maps Geocoding API
+        geocode_result = gmaps.geocode(address, components={"country": "se"})
+
+        if geocode_result:
+            location = geocode_result[0]["geometry"]["location"]
+            lat = location["lat"]
+            lon = location["lng"]
+            return lat, lon
+        else:
+            st.error(f"Could not find the address: {address}")
+            return None, None
+
+    except Exception:
+        st.error("A problem occurred during communication with the Google Maps API.")
+        return None, None
