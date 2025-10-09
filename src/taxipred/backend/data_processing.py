@@ -13,9 +13,8 @@ class TaxiData:
 
 
 class TripInput(BaseModel):
-    Base_Fare: float = Field(3.5, gt=1.5, lt=5.0)
     Trip_Distance_km: float = Field(25.3, gt=1.0)
-    Time_of_Day: str = Field("Morning", pattern="^(Morning|Afternoon|Evning|Night)$")
+    Time_of_Day: str = Field("Morning", pattern="^(Morning|Afternoon|Evening|Night)$")
     Day_of_Week: str = Field("Weekday", pattern="^(Weekday|Weekend)$")
 
 
