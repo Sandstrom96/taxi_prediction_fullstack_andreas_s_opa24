@@ -28,8 +28,6 @@ with form:
     start_address = col1.text_input("Start")
     destination_address = col2.text_input("Destination")
 
-    # st.divider()
-
     selected_date = st.date_input("Date")
     selected_time_type = st.pills(
         "Departure/Arrival time",
@@ -37,7 +35,7 @@ with form:
         selection_mode="single",
         default="Departure time",
     )
-    selected_time = st.time_input(selected_time_type)
+    selected_time = st.time_input("Time")
 
     submitted = st.form_submit_button("Predict")
 
