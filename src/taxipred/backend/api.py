@@ -26,7 +26,7 @@ def predict_trip_price(payload: TripInput):
         "Time_of_Day": payload.Time_of_Day,
         "Day_of_Week": payload.Day_of_Week,
     }
-    preditction_data = pd.DataFrame([features])
+    prediction_data = pd.DataFrame([features])
 
     # Load model, scaler and columns from trained model
     model = joblib.load(MODELS_PATH / "model.joblib")
@@ -35,7 +35,7 @@ def predict_trip_price(payload: TripInput):
 
     # Encoding the categorical features
     encoded_data = pd.get_dummies(
-        preditction_data, columns=["Time_of_Day", "Day_of_Week"]
+        prediction_data, columns=["Time_of_Day", "Day_of_Week"]
     )
 
     # Reindexing to ensure the columns match the trained data
