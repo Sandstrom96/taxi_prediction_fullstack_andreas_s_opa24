@@ -3,6 +3,7 @@ from taxipred.backend.data_processing import TaxiData, TripInput, PredictionOutp
 import pandas as pd
 import joblib
 from taxipred.utils.constants import MODELS_PATH
+from taxipred.utils.helpers import calculate_base_fare
 
 app = FastAPI()
 
@@ -16,9 +17,18 @@ async def read_taxi_data():
 
 @app.post("/taxi/predict", response_model=PredictionOutput)
 def predict_trip_price(payload: TripInput):
-    preditction_data = pd.DataFrame([payload.model_dump()])
+    base_fare = calculate_base_fare(
+        taxi_data.df, payload.Time_of_Day, payload.Day_of_Week
+    )
+    features = {
+        "Base_Fare": base_fare,
+        "Trip_Distance_km": payload.Trip_Distance_km,
+        "Time_of_Day": payload.Time_of_Day,
+        "Day_of_Week": payload.Day_of_Week,
+    }
+    preditction_data = pd.DataFrame([features])
 
-    # Load the trained model, the used scaler and encoded_columns from training
+    # Load model, scaler and columns from trained model
     model = joblib.load(MODELS_PATH / "model.joblib")
     scaler = joblib.load(MODELS_PATH / "scaler.joblib")
     encoded_columns = joblib.load(MODELS_PATH / "encoded_columns.joblib")
@@ -27,9 +37,11 @@ def predict_trip_price(payload: TripInput):
     encoded_data = pd.get_dummies(
         preditction_data, columns=["Time_of_Day", "Day_of_Week"]
     )
+
     # Reindexing to ensure the columns match the trained data
     encoded_data = encoded_data.reindex(columns=encoded_columns, fill_value=0)
-    # If hte model used a scaler, scale the data
+
+    # Apply scaler if it exists
     if scaler is not None:
         encoded_data = scaler.transform(encoded_data)
 

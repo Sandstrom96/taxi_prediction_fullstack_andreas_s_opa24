@@ -1,7 +1,6 @@
 import streamlit as st
 from taxipred.utils.helpers import (
     read_api_endpoint,
-    calculate_base_fare,
     get_day_of_week,
     get_time_of_day,
     post_api_endpoint,
@@ -81,9 +80,7 @@ with form:
                             arrival_time=trip_timestamp,
                         )
 
-                    base_fare = calculate_base_fare(df, time_of_day, day_of_week)
                     payload = {
-                        "Base_Fare": base_fare,
                         "Trip_Distance_km": distance_km,
                         "Time_of_Day": time_of_day,
                         "Day_of_Week": day_of_week,
